@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import {getCurrentPosition} from "@/api/bigdatacloud";
+
 interface Coordinates {
     latitude: number,
     longitude: number,
@@ -6,7 +8,8 @@ interface Coordinates {
 }
 interface State {
     options: object,
-    myCoordinates: Coordinates
+    myCoordinates: Coordinates,
+    city: string
 }
 export const useGeolocationStore = defineStore('geolocation', {
     state: () => ({
@@ -16,16 +19,19 @@ export const useGeolocationStore = defineStore('geolocation', {
             maximumAge: 0,
         },
         myCoordinates: {},
+        city: '',
     } as State),
     getters: {
         isTheAreCoordinates: (state): boolean => Boolean(Object.keys(state.myCoordinates).length)
     },
     actions: {
-        success(position: { coords: Coordinates; }) {
+        async success(position: { coords: Coordinates; }) {
             this.myCoordinates = {...position.coords}
+            const { data } = await getCurrentPosition(position.coords.latitude, position.coords.longitude)
+            this.city = data.city;
         },
         error(err: { code: any; message: any; }) {
             console.warn(`ERROR(${err.code}): ${err.message}`);
-        }
+        },
     }
 })
