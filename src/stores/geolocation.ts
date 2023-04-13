@@ -27,7 +27,7 @@ export const useGeolocationStore = defineStore('geolocation', {
     actions: {
         async success(position: { coords: Coordinates; }) {
             this.myCoordinates = {...position.coords}
-            const { data } = await getCurrentPosition(position.coords.latitude, position.coords.longitude)
+            const { data } = await getCurrentPosition(position.coords.latitude.toString(), position.coords.longitude.toString())
             this.city = data.city;
         },
         error(err: { code: any; message: any; }) {

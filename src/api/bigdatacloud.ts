@@ -4,16 +4,16 @@ const instance = axios.create({
     baseURL: 'https://api.bigdatacloud.net'
 });
 
-async function getCurrentPosition(latitude: number, longitude: number) {
+async function getCurrentPosition(latitude: string, longitude: string) {
     try {
-        const data = {
+        const params = new URLSearchParams({
             latitude,
             longitude
-        }
-        const params = new URLSearchParams(data)
-      return await instance.get('/data/reverse-geocode-client', { params })
+        })
+        const data = await instance.get('/data/reverse-geocode-client', { params })
+        return Promise.resolve(data)
     }catch (error) {
-        console.error(error);
+        return Promise.reject(error)
     }
 }
 
